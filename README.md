@@ -30,7 +30,7 @@ CampusConnect is a modern platform that brings students, faculty, and campus org
 Clone the repo and install dependencies:
 
 ```bash
-git clone https://github.com/your-username/campusconnect.git
+git clone https://github.com/kushagra751/campusconnect.git
 cd campusconnect
 npm install   # or yarn install
 ```
