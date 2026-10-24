@@ -197,7 +197,7 @@ const ProfileSection = ({ onClose, onApply, initialProfile }) => {
             </div>
             {showImageInput ? (
               <div className="mt-4 w-full">
-                <input
+                <input aria-label="Enter image URL"
                   type="url"
                   placeholder="Enter image URL"
                   value={profilePicture}

@@ -34,12 +34,21 @@ git clone https://github.com/kushagra751/campusconnect.git
 cd campusconnect
 npm install   # or yarn install
 ```
-#How to run this project.
+## How to run this project
+
+Prerequisites: Node.js 18+ and a MongoDB database (local or Atlas).
 
 ```bash
-after downloading the whole project.
-Step 1 : npm init i
-Step 2 : cd frontend
-Step 3 : cd backend ( in another terminal )
-Step 4 : npm run dev (frontend terminal)
-Step 5 : npm run dev (backend terminal)
+# Backend (terminal 1)
+cd backend
+npm install
+cp .env.example .env   # then fill in MONGO_URI, JWT_SECRET, email settings
+npm run dev            # http://localhost:3000
+
+# Frontend (terminal 2)
+cd frontend
+npm install
+npm run dev            # http://localhost:5173
+```
+
+The frontend API base URL is set in `frontend/src/lib/api.js`.

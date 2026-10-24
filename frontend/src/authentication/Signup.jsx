@@ -77,7 +77,7 @@ function SignupPage() {
             <span className="p-2 border-r-2 border-black">
               <User size={20} />
             </span>
-            <input
+            <input aria-label="Username"
               type="text"
               placeholder="Username"
               value={username}
@@ -92,7 +92,7 @@ function SignupPage() {
             <span className="p-2 border-r-2 border-black">
               <Mail size={20} />
             </span>
-            <input
+            <input aria-label="Email"
               type="email"
               placeholder="Email"
               value={email}
@@ -107,7 +107,7 @@ function SignupPage() {
             <span className="p-2 border-r-2 border-black">
               <Lock size={20} />
             </span>
-            <input
+            <input aria-label="Password"
               type="password"
               placeholder="Password"
               value={password}

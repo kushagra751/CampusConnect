@@ -164,7 +164,7 @@ function ForgetPasswordPage() {
                 <span className="p-2 border-r-2 border-black">
                   <Mail size={20} />
                 </span>
-                <input
+                <input aria-label="Enter your Email"
                   type="email"
                   placeholder="Enter your Email"
                   value={email}
@@ -191,7 +191,7 @@ function ForgetPasswordPage() {
                 <span className="p-2 border-r-2 border-black">
                   <Key size={20} />
                 </span>
-                <input
+                <input aria-label="Enter OTP"
                   type="text"
                   placeholder="Enter OTP"
                   value={otp}
@@ -228,7 +228,7 @@ function ForgetPasswordPage() {
                 <span className="p-2 border-r-2 border-black">
                   <Lock size={20} />
                 </span>
-                <input
+                <input aria-label="New Password"
                   type="password"
                   placeholder="New Password"
                   value={newPassword}
@@ -243,7 +243,7 @@ function ForgetPasswordPage() {
                 <span className="p-2 border-r-2 border-black">
                   <Lock size={20} />
                 </span>
-                <input
+                <input aria-label="Confirm Password"
                   type="password"
                   placeholder="Confirm Password"
                   value={confirmPassword}

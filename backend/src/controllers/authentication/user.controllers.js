@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import {sendOtpEmail} from '../../lib/email_generator.js';
 import { User } from '../../db/models/user.model.js';
 import OTPModel from '../../db/models/otp.model.js';
+import { cleanEmail, isString, validPassword } from '../../lib/validate.js';
 
 // Generate JWT token
 const generateToken = (userId) => {
@@ -11,7 +12,11 @@ const generateToken = (userId) => {
 
 // ================== SIGNUP ==================
 export const user_signup = async (req, res) => {
-  const { username, email, password } = req.body;
+  const { username, password } = req.body || {};
+  const email = cleanEmail(req.body?.email);
+  if (!isString(username) || !username.trim() || !email || !validPassword(password)) {
+    return res.status(400).json({ message: 'Valid username, email and a password of 6+ characters are required' });
+  }
   try {
     const userExists = await User.findOne({ email });
     if (userExists) return res.status(400).json({ message: 'User already exists' });
@@ -19,22 +24,27 @@ export const user_signup = async (req, res) => {
     // hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = new User({ username, email, password: hashedPassword });
+    const newUser = new User({ username: username.trim(), email, password: hashedPassword });
     await newUser.save();
 
     const token = generateToken(newUser._id);
     res.status(201).json({ 
       token, 
-      user: { id: newUser._id, username, email } 
+      user: { id: newUser._id, username: username.trim(), email } 
     });
   } catch (err) {
-    res.status(500).json({ message: 'Server error', error: err.message });
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
 // ================== LOGIN ==================
 export const user_login = async (req, res) => {
-  const { email, password } = req.body;
+  const email = cleanEmail(req.body?.email);
+  const password = req.body?.password;
+  if (!email || !isString(password)) {
+    return res.status(400).json({ message: 'Email and password are required' });
+  }
   try {
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ message: 'Invalid credentials' });
@@ -50,7 +60,8 @@ export const user_login = async (req, res) => {
     });
     
   } catch (err) {
-    res.status(500).json({ message: 'Server error', error: err.message });
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
@@ -64,7 +75,10 @@ export const user_logout = (req, res) => {
 // ================== FORGET PASSWORD ==================
 
 export const forget_user_pass = async (req, res) => {
-  const { email } = req.body;
+  const email = cleanEmail(req.body?.email);
+  if (!email) {
+    return res.status(400).json({ success: false, message: "A valid email is required" });
+  }
   try {
     // Check if user exists
     const user = await User.findOne({ email });
@@ -101,8 +115,7 @@ export const forget_user_pass = async (req, res) => {
   } catch (error) {
     return res.status(500).json({ 
       success: false, 
-      message: "Failed to send OTP email!", 
-      error: error.message 
+      message: "Failed to send OTP email!"
     });  
   }
 };
@@ -110,7 +123,11 @@ export const forget_user_pass = async (req, res) => {
 // ================== VERIFY OTP ==================
 
 export const verify_otp = async (req, res) => {
-  const { email, otp } = req.body;
+  const email = cleanEmail(req.body?.email);
+  const otp = req.body?.otp;
+  if (!email || otp === undefined || otp === null || typeof otp === "object") {
+    return res.status(400).json({ success: false, message: "Email and OTP are required" });
+  }
   try {
     const user = await User.findOne({ email });
     if (!user) {
@@ -142,8 +159,7 @@ export const verify_otp = async (req, res) => {
   } catch (error) {
     return res.status(500).json({ 
       success: false, 
-      message: "Failed to verify OTP!", 
-      error: error.message 
+      message: "Failed to verify OTP!"
     });
   }
 };
@@ -151,7 +167,11 @@ export const verify_otp = async (req, res) => {
 // ================== RESET PASSWORD ==================
 
 export const reset_password = async (req, res) => {
-  const { email, otp, newPassword } = req.body;
+  const email = cleanEmail(req.body?.email);
+  const { otp, newPassword } = req.body || {};
+  if (!email || otp === undefined || otp === null || typeof otp === "object" || !validPassword(newPassword)) {
+    return res.status(400).json({ success: false, message: "Email, OTP and a new password of 6+ characters are required" });
+  }
   try {
     const user = await User.findOne({ email });
     if (!user) {
@@ -190,8 +210,7 @@ export const reset_password = async (req, res) => {
   } catch (error) {
     return res.status(500).json({ 
       success: false, 
-      message: "Failed to reset password!", 
-      error: error.message 
+      message: "Failed to reset password!"
     });
   }
 };
@@ -238,8 +257,7 @@ export const get_profile = async (req, res) => {
   } catch (error) {
     return res.status(500).json({ 
       success: false, 
-      message: "Failed to get profile!", 
-      error: error.message 
+      message: "Failed to get profile!"
     });
   }
 };
@@ -267,12 +285,12 @@ export const update_profile = async (req, res) => {
     }
 
     // Update user fields
-    if (username) user.username = username;
-    if (university !== undefined) user.university = university;
-    if (semester !== undefined) user.semester = semester;
-    if (age !== undefined) user.age = age;
-    if (profilePicture !== undefined) user.profilePicture = profilePicture;
-    if (settings) {
+    if (username && isString(username)) user.username = username.trim();
+    if (isString(university)) user.university = university;
+    if (isString(semester)) user.semester = semester;
+    if (Number.isFinite(Number(age)) && age !== "" && age !== null) user.age = Number(age);
+    if (isString(profilePicture) && /^(https?:\/\/|data:image\/)/.test(profilePicture) || profilePicture === "") user.profilePicture = profilePicture;
+    if (settings && typeof settings === 'object') {
       if (settings.muteNotifications !== undefined) user.settings.muteNotifications = settings.muteNotifications;
       if (settings.darkMode !== undefined) user.settings.darkMode = settings.darkMode;
       if (settings.twoFactor !== undefined) user.settings.twoFactor = settings.twoFactor;
@@ -298,8 +316,7 @@ export const update_profile = async (req, res) => {
   } catch (error) {
     return res.status(500).json({ 
       success: false, 
-      message: "Failed to update profile!", 
-      error: error.message 
+      message: "Failed to update profile!"
     });
   }
 };

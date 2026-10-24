@@ -31,12 +31,12 @@ export default function ContactPage() {
       <div className="grid md:grid-cols-2 gap-8 w-full max-w-5xl mx-auto">
         {/* Form */}
         <div className="p-6 bg-white border-2 border-black shadow-[6px_6px_0px_black] rounded-lg space-y-4">
-          <input
+          <input aria-label="Full Name"
             type="text"
             placeholder="Full Name"
             className="w-full border-2 border-black rounded-md p-2 shadow-[3px_3px_0px_black] focus:outline-none"
           />
-          <input
+          <input aria-label="Email"
             type="email"
             placeholder="Email"
             className="w-full border-2 border-black rounded-md p-2 shadow-[3px_3px_0px_black] focus:outline-none"

@@ -94,7 +94,7 @@ export default function Mentors() {
         <div className="mb-6">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-            <input
+            <input aria-label="Search mentors by name or department..."
               type="text"
               placeholder="Search mentors by name or department..."
               value={searchTerm}

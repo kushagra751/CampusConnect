@@ -114,7 +114,7 @@ function Rooms() {
           <div className="flex-1 flex justify-center">
             <div className="flex items-center w-full max-w-xl bg-gray-200 rounded-full px-3 py-2 border-2 border-gray-300">
               <Search className="w-5 h-5 text-gray-500" />
-              <input
+              <input aria-label="Search"
                 type="text"
                 placeholder="Search"
                 value={searchTerm}
@@ -188,14 +188,14 @@ function Rooms() {
                 </button>
               </div>
               <div className="space-y-4">
-                <input
+                <input aria-label="Room Name *"
                   type="text"
                   placeholder="Room Name *"
                   value={newRoom.name}
                   onChange={(e) => setNewRoom({ ...newRoom, name: e.target.value })}
                   className="w-full p-2 border rounded-lg"
                 />
-                <input
+                <input aria-label="Discussion Topic *"
                   type="text"
                   placeholder="Discussion Topic *"
                   value={newRoom.discussion}

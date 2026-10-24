@@ -170,7 +170,7 @@ export default function Events() {
                 </button>
               </div>
               <div className="space-y-4">
-                <input
+                <input aria-label="Event Title *"
                   type="text"
                   placeholder="Event Title *"
                   value={newEvent.title}
@@ -189,7 +189,7 @@ export default function Events() {
                   onChange={(e) => setNewEvent({ ...newEvent, time: e.target.value })}
                   className="w-full p-2 border rounded-lg"
                 />
-                <input
+                <input aria-label="Location *"
                   type="text"
                   placeholder="Location *"
                   value={newEvent.location}
